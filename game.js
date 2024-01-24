@@ -22,6 +22,7 @@ var config = {
 
 var game = new Phaser.Game(config);
 var player;
+var guitar;
 var cursors;
 
 var scaleFactor = winHeight / 1024;
@@ -37,8 +38,9 @@ function preload() {
   this.load.image("platform_thin", "assets/platforms/platform_thin.png");
   this.load.image("platform_two_blocks", "assets/platforms/platform_two_blocks.png");
   this.load.image("platform_funky", "assets/platforms/platform_funky.png");
-  this.load.image("sphere", "assets/sphere.png");
+  // this.load.image("guitar", "assets/guitar_2.png");
   this.load.spritesheet("player", "assets/happy_sprite.png", { frameWidth: 64, frameHeight: 64 });
+  this.load.spritesheet("guitar", "assets/guitar_sprite.png", { frameWidth: 128, frameHeight: 128 });
 }
 
 function create() {
@@ -47,7 +49,7 @@ function create() {
 
   var platforms = this.physics.add.staticGroup();
   platforms
-    .create(winHeight / 2, winHeight - 60, "ground")
+    .create(winHeight / 2, winHeight * 0.935, "ground")
     .setScale(scaleFactor)
     .refreshBody();
 
@@ -92,14 +94,44 @@ function create() {
     .refreshBody();
 
   player = this.physics.add.sprite(winHeight * 0.1, winHeight * 0.8, "player");
+  player.body.setSize(54, 64);
+  player.body.setOffset(5, 0);
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
   player.setScale(scaleFactor * 1.3).refreshBody();
   this.physics.add.collider(player, platforms);
+  this.anims.create({
+    key: "left",
+    frames: this.anims.generateFrameNumbers("player", { start: 0, end: 1 }),
+    frameRate: 12,
+    repeat: -1,
+  });
+  this.anims.create({
+    key: "right",
+    frames: this.anims.generateFrameNumbers("player", { start: 2, end: 3 }),
+    frameRate: 12,
+    repeat: -1,
+  });
 
-  var sphere = this.physics.add.staticGroup();
-  sphere.create(winHeight * 0.1, winHeight * 0.4, "sphere");
-  this.physics.add.overlap(player, sphere, reachSphere, null, this);
+  guitar = this.physics.add.sprite(winHeight * 0.1, winHeight * 0.35, "guitar");
+  guitar.setScale(scaleFactor * 1.3).refreshBody();
+  guitar.body.setSize(100, 100);
+  this.physics.add.collider(guitar, platforms);
+  this.physics.add.overlap(player, guitar, reachGuitar, null, this);
+  var frames = [];
+  for (var i = 0; i < 8; i++) {
+    frames.push({ key: "guitar", frame: i });
+  }
+  for (var i = 7; i >= 0; i--) {
+    frames.push({ key: "guitar", frame: i });
+  }
+  this.anims.create({
+    key: "glowing",
+    frames: frames,
+    frameRate: 8,
+    repeat: -1,
+  });
+  guitar.anims.play("glowing", true);
 
   cursors = this.input.keyboard.createCursorKeys();
   jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
@@ -127,7 +159,7 @@ function update() {
   }
 }
 
-function reachSphere(player, sphere) {
+function reachGuitar(player, guitar) {
   // Pause the game or bring up a modal with project info
   showProjectInfo();
 }
