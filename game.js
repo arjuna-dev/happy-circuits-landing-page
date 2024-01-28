@@ -13,6 +13,9 @@ var config = {
       debug: true,
     },
   },
+  input: {
+    activePointers: 3,
+  },
   scene: {
     preload: preload,
     create: create,
@@ -22,10 +25,16 @@ var config = {
 
 var game = new Phaser.Game(config);
 var player;
+var isMovingLeft = false;
+var isMovingRight = false;
+var isJumping = false;
 var guitar;
 var cursors;
 
 var scaleFactor = winHeight / 1024;
+
+const cameraMinX = 0;
+const cameraMaxX = winHeight - winWidth;
 
 function preload() {
   this.load.image("background", "assets/background.png");
@@ -38,9 +47,10 @@ function preload() {
   this.load.image("platform_thin", "assets/platforms/platform_thin.png");
   this.load.image("platform_two_blocks", "assets/platforms/platform_two_blocks.png");
   this.load.image("platform_funky", "assets/platforms/platform_funky.png");
-  // this.load.image("guitar", "assets/guitar_2.png");
   this.load.spritesheet("player", "assets/happy_sprite.png", { frameWidth: 64, frameHeight: 64 });
   this.load.spritesheet("guitar", "assets/guitar_sprite.png", { frameWidth: 128, frameHeight: 128 });
+  var joy_url = "plugins/rexvirtualjoystickplugin.min.js";
+  this.load.plugin("rexvirtualjoystickplugin", joy_url, true);
 }
 
 function create() {
@@ -99,6 +109,8 @@ function create() {
   player.setBounce(0.2);
   player.setCollideWorldBounds(true);
   player.setScale(scaleFactor * 1.3).refreshBody();
+  this.cameras.main.scrollY = 0;
+
   this.physics.add.collider(player, platforms);
   this.anims.create({
     key: "left",
@@ -133,6 +145,34 @@ function create() {
   });
   guitar.anims.play("glowing", true);
 
+  if (winHeight > winWidth) {
+    var jumpButtonObject = this.add
+      .circle(winWidth * 1.36, winHeight * 0.9, 50, 0x888888)
+      .setScrollFactor(0)
+      .setInteractive();
+    jumpButtonObject.setAlpha(0.9);
+    var text = this.add
+      .text(winWidth * 1.36, winHeight * 0.9, "jump", { color: "#fff", align: "center" })
+      .setOrigin(0.5, 0.5)
+      .setScrollFactor(0);
+    jumpButtonObject.on("pointerdown", () => (isJumping = true));
+    jumpButtonObject.on("pointerup", () => (isJumping = false));
+
+    var leftButtonObject = this.add
+      .circle(winWidth * 0.6, winHeight * 0.9, 50, 0x888888)
+      .setScrollFactor(0)
+      .setInteractive();
+    leftButtonObject.on("pointerdown", () => (isMovingLeft = true));
+    leftButtonObject.on("pointerup", () => (isMovingLeft = false));
+
+    var rightButtonObject = this.add
+      .circle(winWidth * 0.9, winHeight * 0.9, 50, 0x888888)
+      .setScrollFactor(0)
+      .setInteractive();
+    rightButtonObject.on("pointerdown", () => (isMovingRight = true));
+    rightButtonObject.on("pointerup", () => (isMovingRight = false));
+  }
+
   cursors = this.input.keyboard.createCursorKeys();
   jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
   spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
@@ -147,20 +187,43 @@ function update() {
     player.anims.play("right", true);
   } else {
     player.setVelocityX(0);
-    player.anims.play("turn");
   }
 
   if ((cursors.up.isDown || jumpKey.isDown || spaceBar.isDown) && player.body.touching.down) {
     player.setVelocityY(-300);
   }
 
-  if ((cursors.up.isDown || this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W).isDown) && player.body.touching.down) {
-    player.setVelocityY(-300);
+  if (winHeight > winWidth) {
+    if (this.joystick) {
+      var force = this.joystick.force;
+      var angle = this.joystick.angle;
+
+      if (force !== 0) {
+        this.player.setVelocity(Math.cos(angle) * force, Math.sin(angle) * force);
+      }
+    }
+
+    if (isMovingLeft) {
+      player.setVelocityX(-160);
+    } else if (isMovingRight) {
+      player.setVelocityX(160);
+    } else {
+      player.setVelocityX(0);
+    }
+    if (isJumping && player.body.touching.down) {
+      player.setVelocityY(-300);
+    }
+
+    this.cameras.main.scrollY = 0;
+    let playerX = player.x;
+    let minX = winWidth / 2;
+    let maxX = winHeight - winWidth / 2;
+    let cameraX = Phaser.Math.Clamp(playerX, minX, maxX);
+    this.cameras.main.scrollX = cameraX - this.cameras.main.width / 2;
   }
 }
 
-function reachGuitar(player, guitar) {
-  // Pause the game or bring up a modal with project info
+function reachGuitar() {
   showProjectInfo();
 }
 
