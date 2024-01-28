@@ -205,8 +205,10 @@ function update() {
 
     if (isMovingLeft) {
       player.setVelocityX(-160);
+      player.anims.play("left", true);
     } else if (isMovingRight) {
       player.setVelocityX(160);
+      player.anims.play("right", true);
     } else {
       player.setVelocityX(0);
     }
