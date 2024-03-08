@@ -60,3 +60,64 @@ body {
   padding: 0;
   display: block;
 }
+
+/* _____ ______   ________  ________  ________  ___       ________      
+|\   _ \  _   \|\   __  \|\   ___ \|\   __  \|\  \     |\   ____\     
+\ \  \\\__\ \  \ \  \|\  \ \  \_|\ \ \  \|\  \ \  \    \ \  \___|_    
+ \ \  \\|__| \  \ \  \\\  \ \  \ \\ \ \   __  \ \  \    \ \_____  \   
+  \ \  \    \ \  \ \  \\\  \ \  \_\\ \ \  \ \  \ \  \____\|____|\  \  
+   \ \__\    \ \__\ \_______\ \_______\ \__\ \__\ \_______\____\_\  \ 
+    \|__|     \|__|\|_______|\|_______|\|__|\|__|\|_______|\_________\
+                                                          \|_________|
+                                                                      
+                                                                       */
+
+.modal-window {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 30%; /* Adjusted width */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Adjustments for video and images to ensure they fit within the modal */
+video,
+.carousel img {
+  max-width: 100%;
+  height: auto; /* Adjust height to maintain aspect ratio */
+}
+
+/* Mobile styles */
+@media screen and (max-width: 600px) {
+  .modal-content {
+    width: 90%; /* Adjust width for mobile */
+    height: auto; /* Remove fixed height to accommodate content */
+  }
+
+  .modal-window {
+    width: 100%; /* Full width for modal window */
+    top: 10%; /* Adjust top position */
+  }
+}

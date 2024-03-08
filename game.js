@@ -225,16 +225,67 @@ function update() {
   }
 }
 
-function reachGuitar() {
-  showProjectInfo();
-}
-
-function showProjectInfo() {
-  var modal = document.getElementById("projectInfoModal");
-  modal.style.display = "block";
-
-  var closeButton = document.getElementById("closeModal");
-  closeButton.onclick = function () {
-    modal.style.display = "none";
+// Close modal functionality
+document.querySelectorAll(".close").forEach((element) => {
+  element.onclick = function () {
+    this.parentElement.parentElement.style.display = "none";
   };
+});
+
+// Simple carousel functionality (consider using a library for a full-featured carousel)
+let currentImageIndex = 0;
+function showImage(index) {
+  let images = document.querySelectorAll("#imageCarouselWindow .carousel img");
+  images.forEach((img, i) => {
+    img.style.display = i === index ? "block" : "none";
+  });
 }
+
+// Call this function to cycle through images
+function nextImage() {
+  let images = document.querySelectorAll("#imageCarouselWindow .carousel img");
+  currentImageIndex = (currentImageIndex + 1) % images.length;
+  showImage(currentImageIndex);
+}
+
+// Display the first image initially
+showImage(0);
+
+// Random positioning for desktop
+function randomPosition(modalId) {
+  let modal = document.getElementById(modalId);
+  if (window.innerWidth > 600) {
+    // Assume desktop if width is greater than 600px
+    let maxHeight = window.innerHeight - modal.offsetHeight;
+    let maxWidth = window.innerWidth - modal.offsetWidth;
+    modal.style.left = Math.floor(Math.random() * maxWidth) + "px";
+    modal.style.top = Math.floor(Math.random() * maxHeight) + "px";
+    modal.style.display = "block";
+  } else {
+    modal.style.display = "block"; // For mobile, just show it (handled by CSS)
+  }
+}
+
+// // Initial call to display modals and set them in random positions or stacked for mobile
+// document.addEventListener('DOMContentLoaded', function() {
+
+// });
+var has_reached_guitar = false;
+function reachGuitar() {
+  if (!has_reached_guitar) {
+    randomPosition("videoWindow");
+    randomPosition("imageCarouselWindow");
+    randomPosition("textWindow");
+    setInterval(nextImage, 3000); // Change image every 3 seconds
+  }
+}
+
+// function showProjectInfo() {
+//   var modal = document.getElementById("projectInfoModal");
+//   modal.style.display = "block";
+
+//   var closeButton = document.getElementById("closeModal");
+//   closeButton.onclick = function () {
+//     modal.style.display = "none";
+//   };
+// }
