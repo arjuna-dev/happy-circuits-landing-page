@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.55.2/phaser.min.js"></script>
+    <script src="modals.js"></script>
   </head>
   <body>
     <div id="game-container-container" class="background-element">
@@ -28,22 +29,32 @@
     </div>
     <div
       id="projectInfoModal"
-      style="
-        display: none;
-        position: fixed;
-        z-index: 1;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, 0.4);
-      "
+      style="position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.4)"
     >
-      <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%">
-        <h2>Project Info</h2>
-        <p>This is some information about the project...</p>
-        <button id="closeModal">Close</button>
+      <div id="videoModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <video src="assets/video/MAGPIE_video.mp4" controls></video>
+        </div>
+      </div>
+
+      <div id="carouselModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <div id="carousel">
+            <!-- Add your carousel images here -->
+            <img src="assets/carousel_images/1.png" alt="Image 1" />
+            <img src="assets/carousel_images/2.png" alt="Image 2" />
+            <img src="assets/carousel_images/3.png" alt="Image 3" />
+          </div>
+        </div>
+      </div>
+
+      <div id="textModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>This is a short text description of the project.</p>
+        </div>
       </div>
     </div>
     <script src="game.js"></script>

@@ -30,6 +30,7 @@ var isMovingRight = false;
 var isJumping = false;
 var guitar;
 var cursors;
+var is_guitar_overlap = false;
 
 var scaleFactor = winHeight / 1024;
 
@@ -225,16 +226,49 @@ function update() {
   }
 }
 
-function reachGuitar() {
-  showProjectInfo();
+// Get the modal elements
+var videoModal = document.getElementById("videoModal");
+var carouselModal = document.getElementById("carouselModal");
+var textModal = document.getElementById("textModal");
+
+// Get the close buttons
+var closeButtons = document.getElementsByClassName("close");
+
+// Close the modals when the close button is clicked
+for (var i = 0; i < closeButtons.length; i++) {
+  closeButtons[i].addEventListener("click", function () {
+    this.parentElement.parentElement.style.display = "none";
+  });
 }
 
-function showProjectInfo() {
-  var modal = document.getElementById("projectInfoModal");
+// Function to open a modal
+function openModal(modal) {
+  console.log("opening modal: ", modal);
   modal.style.display = "block";
 
-  var closeButton = document.getElementById("closeModal");
-  closeButton.onclick = function () {
-    modal.style.display = "none";
-  };
+  // Set random position for desktop view
+  if (window.innerWidth > 600) {
+    modal.style.top = Math.random() * (window.innerHeight - modal.offsetHeight) + "px";
+    modal.style.left = Math.random() * (window.innerWidth - modal.offsetWidth) + "px";
+  }
 }
+
+function reachGuitar() {
+  if (!is_guitar_overlap) {
+    console.log("reached guitar");
+    openModal(videoModal);
+    openModal(carouselModal);
+    openModal(textModal);
+  }
+  is_guitar_overlap = true;
+}
+
+// function showProjectInfo() {
+//   var modal = document.getElementById("projectInfoModal");
+//   modal.style.display = "block";
+
+//   var closeButton = document.getElementById("closeModal");
+//   closeButton.onclick = function () {
+//     modal.style.display = "none";
+//   };
+// }
