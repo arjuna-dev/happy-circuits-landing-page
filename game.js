@@ -10,7 +10,7 @@ var config = {
     default: "arcade",
     arcade: {
       gravity: { y: 300 },
-      debug: true,
+      debug: false,
     },
   },
   input: {
@@ -30,6 +30,8 @@ var isMovingRight = false;
 var isJumping = false;
 var guitar;
 var cursors;
+var currentlyOverlapping = false;
+var hasReachedGuitar = false;
 
 var scaleFactor = winHeight / 1024;
 
@@ -103,7 +105,8 @@ function create() {
     .setScale(scaleFactor)
     .refreshBody();
 
-  player = this.physics.add.sprite(winHeight * 0.1, winHeight * 0.8, "player");
+  player = this.physics.add.sprite(winHeight * 0.3, winHeight * 0.3, "player");
+  // player = this.physics.add.sprite(winHeight * 0.1, winHeight * 0.8, "player");
   player.body.setSize(54, 64);
   player.body.setOffset(5, 0);
   player.setBounce(0.2);
@@ -146,31 +149,30 @@ function create() {
   guitar.anims.play("glowing", true);
 
   if (winHeight > winWidth) {
-    var jumpButtonObject = this.add
-      .circle(winWidth * 1.36, winHeight * 0.9, 50, 0x888888)
-      .setScrollFactor(0)
-      .setInteractive();
+    var jump_button_x = winWidth * 1.25;
+    var buttons_y = winHeight * 0.9;
+    var left_button_x = winWidth * 0.6;
+    var right_button_x = winWidth * 0.89;
+    var jumpButtonObject = this.add.circle(jump_button_x, buttons_y, 50, 0x888888).setScrollFactor(0).setInteractive();
     jumpButtonObject.setAlpha(0.9);
-    var text = this.add
-      .text(winWidth * 1.36, winHeight * 0.9, "jump", { color: "#fff", align: "center" })
-      .setOrigin(0.5, 0.5)
-      .setScrollFactor(0);
+    var text = this.add.text(jump_button_x, buttons_y, "jump", { color: "#fff", align: "center" }).setOrigin(0.5, 0.5).setScrollFactor(0);
     jumpButtonObject.on("pointerdown", () => (isJumping = true));
     jumpButtonObject.on("pointerup", () => (isJumping = false));
 
-    var leftButtonObject = this.add
-      .circle(winWidth * 0.6, winHeight * 0.9, 50, 0x888888)
-      .setScrollFactor(0)
-      .setInteractive();
+    var cursor_button_size = 40;
+    var leftButtonObject = this.add.circle(left_button_x, buttons_y, cursor_button_size, 0x888888).setScrollFactor(0).setInteractive();
     leftButtonObject.on("pointerdown", () => (isMovingLeft = true));
     leftButtonObject.on("pointerup", () => (isMovingLeft = false));
+    var text2 = this.add.text(left_button_x, buttons_y, "<", { color: "#fff", align: "center" }).setOrigin(0.5, 0.5).setScrollFactor(0);
+    jumpButtonObject.on("pointerdown", () => (isJumping = true));
+    jumpButtonObject.on("pointerup", () => (isJumping = false));
 
-    var rightButtonObject = this.add
-      .circle(winWidth * 0.9, winHeight * 0.9, 50, 0x888888)
-      .setScrollFactor(0)
-      .setInteractive();
+    var rightButtonObject = this.add.circle(right_button_x, buttons_y, cursor_button_size, 0x888888).setScrollFactor(0).setInteractive();
     rightButtonObject.on("pointerdown", () => (isMovingRight = true));
     rightButtonObject.on("pointerup", () => (isMovingRight = false));
+    var text2 = this.add.text(right_button_x, buttons_y, ">", { color: "#fff", align: "center" }).setOrigin(0.5, 0.5).setScrollFactor(0);
+    jumpButtonObject.on("pointerdown", () => (isJumping = true));
+    jumpButtonObject.on("pointerup", () => (isJumping = false));
   }
 
   cursors = this.input.keyboard.createCursorKeys();
@@ -179,6 +181,8 @@ function create() {
 }
 
 function update() {
+  currentlyOverlapping = this.physics.world.overlap(player, guitar);
+
   if (cursors.left.isDown || this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown) {
     player.setVelocityX(-160);
     player.anims.play("left", true);
@@ -212,6 +216,7 @@ function update() {
     } else {
       player.setVelocityX(0);
     }
+
     if (isJumping && player.body.touching.down) {
       player.setVelocityY(-300);
     }
@@ -224,6 +229,13 @@ function update() {
     this.cameras.main.scrollX = cameraX - this.cameras.main.width / 2;
   }
 }
+
+// .88b  d88.  .d88b.  d8888b.  .d8b.  db      .d8888.
+// 88'YbdP`88 .8P  Y8. 88  `8D d8' `8b 88      88'  YP
+// 88  88  88 88    88 88   88 88ooo88 88      `8bo.
+// 88  88  88 88    88 88   88 88~~~88 88        `Y8b.
+// 88  88  88 `8b  d8' 88  .8D 88   88 88booo. db   8D
+// YP  YP  YP  `Y88P'  Y8888D' YP   YP Y88888P `8888Y'
 
 // Close modal functionality
 document.querySelectorAll(".close").forEach((element) => {
@@ -251,41 +263,97 @@ function nextImage() {
 // Display the first image initially
 showImage(0);
 
-// Random positioning for desktop
-function randomPosition(modalId) {
-  let modal = document.getElementById(modalId);
-  if (window.innerWidth > 600) {
-    // Assume desktop if width is greater than 600px
-    let maxHeight = window.innerHeight - modal.offsetHeight;
-    let maxWidth = window.innerWidth - modal.offsetWidth;
-    modal.style.left = Math.floor(Math.random() * maxWidth) + "px";
-    modal.style.top = Math.floor(Math.random() * maxHeight) + "px";
-    modal.style.display = "block";
-  } else {
-    modal.style.display = "block"; // For mobile, just show it (handled by CSS)
-  }
-}
-
-// // Initial call to display modals and set them in random positions or stacked for mobile
-// document.addEventListener('DOMContentLoaded', function() {
-
-// });
-var has_reached_guitar = false;
 function reachGuitar() {
-  if (!has_reached_guitar) {
-    randomPosition("videoWindow");
-    randomPosition("imageCarouselWindow");
-    randomPosition("textWindow");
-    setInterval(nextImage, 3000); // Change image every 3 seconds
+  if (!hasReachedGuitar) {
+    console.log("reached guitar");
+    document.getElementById("videoWindow").style.display = "block";
+    document.getElementById("imageCarouselWindow").style.display = "block";
+    document.getElementById("textWindow").style.display = "block";
+    setInterval(nextImage, 10000); // Change image every 3 seconds
+  }
+  hasReachedGuitar = true;
+  if (!currentlyOverlapping) {
+    hasReachedGuitar = false;
   }
 }
 
-// function showProjectInfo() {
-//   var modal = document.getElementById("projectInfoModal");
-//   modal.style.display = "block";
+/*                                                                           
+    //    ) )                                                                
+   //    / /  __      ___      ___      ___      ___     / __     //  ___    
+  //    / / //  ) ) //   ) ) //   ) ) //   ) ) //   ) ) //   ) ) // //___) ) 
+ //    / / //      //   / / ((___/ / ((___/ / //   / / //   / / // //        
+//____/ / //      ((___( (   //__     //__   ((___( ( ((___/ / // ((____     */
 
-//   var closeButton = document.getElementById("closeModal");
-//   closeButton.onclick = function () {
-//     modal.style.display = "none";
-//   };
-// }
+function makeDraggable(modalSelector) {
+  var pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+  var modals = document.querySelectorAll(modalSelector);
+
+  modals.forEach(function (modal) {
+    // Move the modal content on mousedown
+    modal.onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // Get the mouse cursor position at startup
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      document.onmouseup = closeDragElement;
+      // Call a function whenever the cursor moves
+      document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      // Calculate the new cursor position
+      pos1 = pos3 - e.clientX;
+      pos2 = pos4 - e.clientY;
+      pos3 = e.clientX;
+      pos4 = e.clientY;
+      // Set the element's new position
+      modal.style.top = modal.offsetTop - pos2 + "px";
+      modal.style.left = modal.offsetLeft - pos1 + "px";
+    }
+
+    function closeDragElement() {
+      // Stop moving when mouse button is released
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  });
+}
+
+// Call the function for your modals
+document.addEventListener("DOMContentLoaded", function () {
+  makeDraggable(".modal-window");
+});
+
+//   #####
+//  #     #   ##   #####   ####  #    #  ####  ###### #
+//  #        #  #  #    # #    # #    # #      #      #
+//  #       #    # #    # #    # #    #  ####  #####  #
+//  #       ###### #####  #    # #    #      # #      #
+//  #     # #    # #   #  #    # #    # #    # #      #
+//   #####  #    # #    #  ####   ####   ####  ###### ######
+
+// Function to show the next image
+function nextImage() {
+  let images = document.querySelectorAll("#imageCarouselWindow .carousel img");
+  currentImageIndex = (currentImageIndex + 1) % images.length;
+  showImage(currentImageIndex);
+}
+
+// Function to show the previous image
+function previousImage() {
+  let images = document.querySelectorAll("#imageCarouselWindow .carousel img");
+  currentImageIndex = (currentImageIndex - 1 + images.length) % images.length; // Ensure the index stays within bounds
+  showImage(currentImageIndex);
+}
+
+// Set up click event listeners for the arrows
+document.querySelector("#imageCarouselWindow .carousel-control.left").addEventListener("click", previousImage);
+document.querySelector("#imageCarouselWindow .carousel-control.right").addEventListener("click", nextImage);
