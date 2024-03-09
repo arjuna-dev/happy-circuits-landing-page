@@ -73,6 +73,12 @@ body {
                                                                       
                                                                        */
 
+#modals-parent {
+  overflow-y: auto; /* Enables vertical scrolling if content overflows */
+  /* height: 500px; Set a fixed height or max-height */
+  max-height: 100vh; /* Set a maximum height */
+}
+
 .modal-window {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
@@ -107,8 +113,16 @@ body {
 }
 
 #textWindow {
-  top: 40%;
+  font-family: "Silkscreen", sans-serif;
+  top: 60%;
   left: 50%;
+}
+
+#formWindow {
+  font-family: "Silkscreen", sans-serif;
+  top: 60%;
+  left: 20%;
+  margin-bottom: 80px;
 }
 
 .close {
@@ -116,6 +130,7 @@ body {
   float: right;
   font-size: 28px;
   font-weight: bold;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
 }
 
 .close:hover,
@@ -194,4 +209,55 @@ video,
 
 .carousel-control.right {
   right: 15px;
+}
+
+/*                                             
+                                            
+                                     ____   
+  .--.,                            ,'  , `. 
+,--.'  \   ,---.    __  ,-.     ,-+-,.' _ | 
+|  | /\/  '   ,'\ ,' ,'/ /|  ,-+-. ;   , || 
+:  : :   /   /   |'  | |' | ,--.'|'   |  || 
+:  | |-,.   ; ,. :|  |   ,'|   |  ,', |  |, 
+|  : :/|'   | |: :'  :  /  |   | /  | |--'  
+|  |  .''   | .; :|  | '   |   : |  | ,     
+'  : '  |   :    |;  : |   |   : |  |/      
+|  | |   \   \  / |  , ;   |   | |`-'       
+|  : \    `----'   ---'    |   ;/           
+|  |,'                     '---'            
+`--'                                        
+                                             */
+
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+.form-group input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.form-group button[type="submit"] {
+  padding: 10px 20px;
+  /* background-color: #5c00a7; */
+  /* Cerate purple gradient color */
+  background: linear-gradient(90deg, #5c00a7 0%, #be008f 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.form-group button[type="submit"]:hover {
+  background-color: #650183;
 }

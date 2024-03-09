@@ -176,24 +176,23 @@ function create() {
   }
 
   cursors = this.input.keyboard.createCursorKeys();
-  jumpKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
   spaceBar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
 
 function update() {
   currentlyOverlapping = this.physics.world.overlap(player, guitar);
 
-  if (cursors.left.isDown || this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown) {
+  if (cursors.left.isDown) {
     player.setVelocityX(-160);
     player.anims.play("left", true);
-  } else if (cursors.right.isDown || this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown) {
+  } else if (cursors.right.isDown) {
     player.setVelocityX(160);
     player.anims.play("right", true);
   } else {
     player.setVelocityX(0);
   }
 
-  if ((cursors.up.isDown || jumpKey.isDown || spaceBar.isDown) && player.body.touching.down) {
+  if ((cursors.up.isDown || spaceBar.isDown) && player.body.touching.down) {
     player.setVelocityY(-300);
   }
 
@@ -262,6 +261,7 @@ function nextImage() {
 
 // Display the first image initially
 showImage(0);
+setInterval(nextImage, 10000);
 
 function reachGuitar() {
   if (!hasReachedGuitar) {
@@ -269,7 +269,7 @@ function reachGuitar() {
     document.getElementById("videoWindow").style.display = "block";
     document.getElementById("imageCarouselWindow").style.display = "block";
     document.getElementById("textWindow").style.display = "block";
-    setInterval(nextImage, 10000); // Change image every 3 seconds
+    document.getElementById("formWindow").style.display = "block";
   }
   hasReachedGuitar = true;
   if (!currentlyOverlapping) {
@@ -297,7 +297,14 @@ function makeDraggable(modalSelector) {
 
     function dragMouseDown(e) {
       e = e || window.event;
-      e.preventDefault();
+
+      // Check if the target is an input or textarea
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+        // Do not prevent default behavior if the target is an input or textarea
+        return; // Exit the function early
+      }
+
+      e.preventDefault(); // Prevent default only for non-input/textarea elements
       // Get the mouse cursor position at startup
       pos3 = e.clientX;
       pos4 = e.clientY;
@@ -357,3 +364,26 @@ function previousImage() {
 // Set up click event listeners for the arrows
 document.querySelector("#imageCarouselWindow .carousel-control.left").addEventListener("click", previousImage);
 document.querySelector("#imageCarouselWindow .carousel-control.right").addEventListener("click", nextImage);
+
+// .-. .-. .-. . .   .-. . .   .-. .-. .  . .-.   .-. .-. .-. .-.
+// `-.  |  |-|  |    | | |\|   `-. |-| |\/| |-    |-' |-| |.. |-
+// `-'  '  ` '  `    `-' ' `   `-' ` ' '  ` `-'   '   ` ' `-' `-'
+
+document.getElementById("subscriptionForm").addEventListener("submit", function (e) {
+  e.preventDefault(); // Stop the form from submitting the traditional way
+
+  var formData = new FormData(this);
+
+  fetch(this.action, {
+    method: "POST",
+    body: formData,
+    mode: "no-cors", // Google Forms require no-cors mode for cross-origin requests
+  })
+    .then((response) => {
+      alert("Thanks, your submission has been recorded!");
+    })
+    .then((data) => {
+      document.getElementById("email").value = "";
+    })
+    .catch((error) => console.error("Error:", error));
+});
