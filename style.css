@@ -1,5 +1,6 @@
 body {
   margin: 0;
+  box-sizing: border-box;
 }
 
 #game-container {
@@ -59,4 +60,204 @@ body {
   margin: 0;
   padding: 0;
   display: block;
+}
+
+/* _____ ______   ________  ________  ________  ___       ________      
+|\   _ \  _   \|\   __  \|\   ___ \|\   __  \|\  \     |\   ____\     
+\ \  \\\__\ \  \ \  \|\  \ \  \_|\ \ \  \|\  \ \  \    \ \  \___|_    
+ \ \  \\|__| \  \ \  \\\  \ \  \ \\ \ \   __  \ \  \    \ \_____  \   
+  \ \  \    \ \  \ \  \\\  \ \  \_\\ \ \  \ \  \ \  \____\|____|\  \  
+   \ \__\    \ \__\ \_______\ \_______\ \__\ \__\ \_______\____\_\  \ 
+    \|__|     \|__|\|_______|\|_______|\|__|\|__|\|_______|\_________\
+                                                          \|_________|
+                                                                      
+                                                                       */
+
+#modals-parent {
+  overflow-y: auto; /* Enables vertical scrolling if content overflows */
+  /* height: 500px; Set a fixed height or max-height */
+  max-height: 100vh; /* Set a maximum height */
+}
+
+.modal-window {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 100; /* Sit on top */
+  width: 30%;
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 90%; /* Adjusted width */
+  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+.modal-content img {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+}
+
+#videoWindow {
+  top: 10%;
+  left: 10%;
+  width: 40%;
+}
+
+#imageCarouselWindow {
+  top: 20%;
+  left: 40%;
+}
+
+#textWindow {
+  font-family: "Silkscreen", sans-serif;
+  top: 60%;
+  left: 50%;
+}
+
+#formWindow {
+  font-family: "Silkscreen", sans-serif;
+  top: 60%;
+  left: 20%;
+  margin-bottom: 80px;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+/* Adjustments for video and images to ensure they fit within the modal */
+video,
+.carousel img {
+  max-width: 100%;
+  height: auto; /* Adjust height to maintain aspect ratio */
+}
+
+/* Mobile styles */
+@media screen and (max-width: 600px) {
+  #modals-parent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Start aligning items from the top */
+    width: 100vw;
+    height: auto; /* Allow container height to grow with content */
+    position: fixed; /* or 'absolute' if that fits your layout better */
+    top: 0;
+    left: 0;
+    overflow-y: auto; /* Allow scrolling if content is taller than the screen */
+    padding: 10px 0; /* Add some padding on the top and bottom */
+  }
+
+  .modal-window {
+    width: 90% !important; /* Occupy 90% of the viewport width */
+    margin-top: 20px !important; /* Space between modals */
+
+    /* Reset properties that might affect vertical stacking */
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    position: relative !important; /* Change positioning to relative */
+    transform: none !important;
+  }
+
+  .modal-content {
+    width: 100%; /* Ensure content uses the full width of the modal */
+    /* Adjust padding, margin, or other properties as needed */
+  }
+}
+
+.carousel-control {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+}
+
+.carousel-control {
+  background-color: rgba(172, 172, 172, 0.493);
+  border-radius: 50%;
+  width: 2em;
+  height: 2em;
+  color: black;
+  font-weight: bolder;
+  font-size: 2em;
+}
+
+.carousel-control.left {
+  left: 15px;
+}
+
+.carousel-control.right {
+  right: 15px;
+}
+
+/*                                             
+                                            
+                                     ____   
+  .--.,                            ,'  , `. 
+,--.'  \   ,---.    __  ,-.     ,-+-,.' _ | 
+|  | /\/  '   ,'\ ,' ,'/ /|  ,-+-. ;   , || 
+:  : :   /   /   |'  | |' | ,--.'|'   |  || 
+:  | |-,.   ; ,. :|  |   ,'|   |  ,', |  |, 
+|  : :/|'   | |: :'  :  /  |   | /  | |--'  
+|  |  .''   | .; :|  | '   |   : |  | ,     
+'  : '  |   :    |;  : |   |   : |  |/      
+|  | |   \   \  / |  , ;   |   | |`-'       
+|  : \    `----'   ---'    |   ;/           
+|  |,'                     '---'            
+`--'                                        
+                                             */
+
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+.form-group input[type="email"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.form-group button[type="submit"] {
+  padding: 10px 20px;
+  /* background-color: #5c00a7; */
+  /* Cerate purple gradient color */
+  background: linear-gradient(90deg, #5c00a7 0%, #be008f 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.form-group button[type="submit"]:hover {
+  background-color: #650183;
 }
